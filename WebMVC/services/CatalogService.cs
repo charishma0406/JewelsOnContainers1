@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +29,11 @@ namespace WebMVC.services
             _baseUri = $"{config["CatalogUrl"]}/api/catalog";
             _client = client;
         }
+
+      
+
         //plugging our services to api paths,from that to http client and all from here
-           public async Task<Catalog> GetCatalogItemsAsync(int page, int size)
+        public async Task<Catalog> GetCatalogItemsAsync(int page, int size)
         {
             //first calling the api paths and in that api paths we are calling catalog and we askng give me the uri for get catalog items and we need to give base uri also
             //base url is coming from configuration as a env var from docker conatiner.
@@ -46,6 +51,91 @@ namespace WebMVC.services
 
 
 
+        }
+
+        //plugging our microservice to apipath and getting all types
+
+        public async Task<IEnumerable<SelectListItem>> GetTypesAsync()
+        {
+            //this is my uri to get catalogtype
+           var typeUri =  ApiPaths.Catalog.GetAllTypes(_baseUri);
+
+            //we need to make httpclient call.
+            //this will give return me in the json format
+           var datastring =  await _client.GetStringAsync(typeUri);
+            //to make as a dropown we are making this
+
+            //we are making an emptylist in the dropdown
+            var items = new List<SelectListItem>
+           { 
+                //we are adding one item
+              new SelectListItem
+              {
+                  //whenever user comes to page by derfault we are showing all the types and brandss on the page
+                  
+                 //the value is null
+                 Value = null,
+                 //this is what user can see the text on the dropdown
+                 Text = "All",
+                 
+                 Selected = true
+
+              }
+
+           };
+
+            //we are using jarray newtons lib to deserilaze the json string format into id and type in my dropdown we are parsing.
+            //JArray parses to string into a collection
+           var types =  JArray.Parse(datastring);
+
+            // we are adding each item, in my each item reading the id value as string and giving it as value and text 
+            foreach(var type in types)
+            {
+                items.Add(new SelectListItem
+                {
+                    //reading the values of id and give it to me as a string(schema of types is id and type)
+                    Value = type.Value<string>("id"),
+                    Text = type.Value<string>("type"),
+
+
+                }
+                );
+            }
+            //returning the items back this is now going back to the controller
+            return items;
+
+        }
+
+
+
+        public async Task<IEnumerable<SelectListItem>> GetBrandsAsync()
+        {
+           var brandUri=  ApiPaths.Catalog.GetAllBrands(_baseUri);
+            var datastring = await _client.GetStringAsync(brandUri);
+            var items = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Value = null,
+                    Text = "All",
+                    Selected = true
+                }
+
+            };
+
+            var brands = JArray.Parse(datastring);
+
+            foreach(var brand in brands)
+            {
+                items.Add(new SelectListItem
+                {
+                    Value = brand.Value<string>("id"),
+                    Text = brand.Value<string>("brand")
+                }
+                ); 
+            }
+            return items;
+            
         }
     }
 }

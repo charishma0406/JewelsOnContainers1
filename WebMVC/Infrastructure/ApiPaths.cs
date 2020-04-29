@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebMVC.Infrastructure
 {
+    //apipath job is to get the endpoint, where would i go and get the data
     //api path job is the give the endpoint where it is located(that is our catalog items) and go fire now
     public class ApiPaths
     {
@@ -21,6 +22,22 @@ namespace WebMVC.Infrastructure
             {
                 
                 return $"{baseUri}/items?pageIndex={page}&pageSize={take}";
+            }
+
+
+            //In Catalog service there are 2 more api's so we need to use it here for client. Api path is to know my uri to get to my microservices
+
+            public static string GetAllTypes(string baseUri)
+            {
+                //baseuri is domain/api/controllername
+                return $"{baseUri}/catalogtypes";
+            }
+
+            //In Catalog service there are 2 more api's so we need to use it here for client. Api path is to know my uri to get to my microservices
+            public static string GetAllBrands(string baseUri)
+            {
+                //baseuri is domain/api/controllername
+                return $"{baseUri}/catalogbrands";
             }
 
         }

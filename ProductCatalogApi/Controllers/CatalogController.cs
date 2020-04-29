@@ -29,11 +29,12 @@ namespace ProductCatalogApi.Controllers
         }
 
         [HttpGet]
-        [Route ("[action]")]
+        [Route("[action]")]
         //whenever we see return type for async and await we need to put task 
         public async Task<IActionResult> Items([FromQuery]int pageindex = 0, [FromQuery]int pagesize = 6)
         {
             //creating var for the count of the pages and longcountasync means it will count till long
+            //getting the catalog items from our catalogcontext
             var itemCount = await _context.CatalogItems.LongCountAsync();
 
 
@@ -65,6 +66,30 @@ namespace ProductCatalogApi.Controllers
             //that means string will not change if we replace also so we are saving in picture url variable itself
             items.ForEach(c => c.PictureUrl = c.PictureUrl.Replace("http://externalcatalogbaseurltobereplaced", _config["ExternalBaseUrl"]));
             return (items);
+        }
+
+
+
+        //creating another api for catalog types. we are getting all the catalogtypes from database. If there will be any call to catalog types then this api will get called.
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IActionResult> GetCatalogTypes()
+        {
+            //we are calling the catalog types from our catalogcontext and defining tolist
+           var items =  await _context.CatalogTypes.ToListAsync();
+            //returning the response whether it is good or not.
+            return Ok(items);
+        }
+
+        //creating another api for catalog brands. we are getting all the catalogbrands from database. If there will be any call to catalog brands then this api will get called.
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IActionResult> GetCatalogBrands()
+        {
+            //we are calling the catalog brands from our catalogcontext and defining tolist
+            var items = await _context.CatalogBrands.ToListAsync();
+            //returning the response whether it is good or not.
+            return Ok(items);
         }
     }
 }
