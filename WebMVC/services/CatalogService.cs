@@ -107,7 +107,7 @@ namespace WebMVC.services
         }
 
 
-
+        //from here it will go to web side catalog controller to give the brands and type, we will call this method in controller.
         public async Task<IEnumerable<SelectListItem>> GetBrandsAsync()
         {
            var brandUri=  ApiPaths.Catalog.GetAllBrands(_baseUri);
