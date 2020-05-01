@@ -18,10 +18,24 @@ namespace WebMVC.Infrastructure
             //we are giving the base uri because it should know the which local host and which port it is using and that port it will take
             //we are giving the page size(page) , page index(take)how many pages to take, which type , which brand to take.
             public static string GetAllCatalogItems(string baseUri,
-               int page, int take)
+               int page, int take, int?brand, int?type)
             {
+                //putting the string as empty first and then we will add the query in this string
+                var filterQs = string.Empty;
+
+                if(brand.HasValue || type.HasValue)
+                {
+                   // using terinary operator here if else
+                   //filtering if brands hasvalue give me brand value as string else null
+                    var brandQs = (brand.HasValue) ? brand.Value.ToString() : "null";
+                    //filtering if types hasvalue give me type value as string else null
+                    var typeQS = (type.HasValue) ? type.Value.ToString() : "null";
+                    //giving it to the empty string after filtering typeqs and brandqs
+                    filterQs = $"/type/{typeQS}/brand/{brandQs}";
+                }
+                //if user did not give any brand or type then filterquery will be empty
                 
-                return $"{baseUri}/items?pageIndex={page}&pageSize={take}";
+                return $"{baseUri}/items{filterQs}?pageIndex={page}&pageSize={take}";
             }
 
 

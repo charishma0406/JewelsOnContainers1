@@ -20,14 +20,14 @@ namespace WebMVC.Controllers
         }
         //the client will tell what page it is. so view will tell that
         //int? is if the page number is null
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(int? page, int?brandFilteredApplied, int? typesFilterApplied)
         {
 
             //telling how many pages we need to show on the ui.
             var itemsOnPage = 10;
             //calling the method in the catalog service 
             //page?? 0 is a terinary operator if page is nul then 0. 
-            var catalog = await _service.GetCatalogItemsAsync(page ?? 0, itemsOnPage);
+            var catalog = await _service.GetCatalogItemsAsync(page ?? 0, itemsOnPage, brandFilteredApplied, typesFilterApplied);
             //there is a class called catalogindexviewmodel from there we are passing the data here
             var vm = new CatalogIndexViewModel
             {
@@ -45,6 +45,13 @@ namespace WebMVC.Controllers
                 Brands = await _service.GetBrandsAsync(),
                 //calling types method from types
                 Types = await _service.GetTypesAsync(),
+
+                //if brandsfilteredapplied if it is null make it as 0
+                BrandFilterApplied = brandFilteredApplied ?? 0,
+                //if typesfilteredapplied if it is null make it as 0
+                TypesFilterApplied = typesFilterApplied ?? 0
+
+
             };
 
             

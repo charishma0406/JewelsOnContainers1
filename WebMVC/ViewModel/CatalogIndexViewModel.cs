@@ -8,6 +8,7 @@ using WebMVC.ViewModel;
 
 namespace WebMVC.ViewModels
 {
+    //we are binding this catalogindexviewmodel to our web controller
     //we are creating this for displaying the brands, types and pagination info, and all the catalog items 
     public class CatalogIndexViewModel
     {
