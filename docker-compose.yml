@@ -36,6 +36,28 @@ services:
      container_name: jewelssqlserver
      networks:
        - backend
+   tokenserver:
+     build:
+       context: .\TokenServiceApi
+       dockerfile: Dockerfile
+     image: jewels/tokenapi
+     logging:
+       driver: "json-file"
+       options:
+         max-size: "200k"
+         max-file: "10"
+     environment:
+       ASPNETCORE_ENVIRONMENT: Development
+       MvcClient: http://localhost:5210
+     ports:
+       - "6700:80"
+     container_name: tokenserviceapi
+     networks:
+       - backend
+       - frontend
+     depends_on:
+       - mssqlserver
+
 
    webmvc: 
      build:
@@ -45,6 +67,8 @@ services:
      container_name: webshop
      environment:
        CatalogUrl: http://catalog
+       IdentityUrl: http://10.0.0.11:6700
+       CallBackUrl: http://localhost:5210
      ports:
        - "5210:80"
      networks:
