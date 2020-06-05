@@ -1,8 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using WebMVC.services
+@using WebMVC.Models
 
 
+@inject IIdentityService<ApplicationUser> UserManager
 
- @if (User.FindFirst(x => x.Type == "preferred_username") != null) {
+@if (User.FindFirst(x => x.Type == "preferred_username") != null)
+{
 
     <section class="col-lg-4 col-md-5 col-xs-12">
         <div class="esh-identity">
@@ -10,15 +14,15 @@
                 <section class="esh-identity-section">
 
                     <div class="esh-identity-name">@User.FindFirst(x => x.Type == "preferred_username").Value</div>
-                    @*<div class="esh-identity-name">@User.Identity.Name</div>*@
+                    <div class="esh-identity-name">@User.Identity.Name</div>
                     <img class="esh-identity-image" src="~/images/arrow-down.png">
                 </section>
 
                 <section class="esh-identity-drop">
 
-                   
 
-                   
+
+
 
                     <a class="esh-identity-item"
                        href="javascript:document.getElementById('logoutForm').submit()">
@@ -32,7 +36,8 @@
     </section>
 
     <section class="col-lg-1 col-xs-12">
-     
+        @await Component.InvokeAsync("Cart", new { user = UserManager.Get(User) })
+
     </section>
 
 }

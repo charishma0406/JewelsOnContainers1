@@ -55,6 +55,57 @@ namespace WebMVC.Infrastructure
             }
 
         }
+
+        //for basket  we are making this class (cart)
+        public static class Basket
+        { 
+            //all these methods should match cart in the services
+            //get basket
+           public static  string GetBasket(string  baseUri, string basketId)
+            {
+                //the baseuri and the id of the basket to get the basket
+                //baseuri is api/cart/get ation in the cart controller services side
+                return $"{baseUri}/{basketId}";
+            }
+
+            //update basket
+            public static string UpdateBasket(string baseUri)
+            {
+                //
+                return baseUri;
+            }
+
+            //delete basket
+            public static string CleanBasket(string baseUri, string basketId)
+            {
+                return $"{baseUri}/{basketId}";
+            }
+        }
+
        
+        
+            public static class Order
+            {
+                public static string GetOrder(string baseUri, string orderId)
+                {
+                    return $"{baseUri}/{orderId}";
+                }
+
+                //public static string GetOrdersByUser(string baseUri, string userName)
+                //{
+                //    return $"{baseUri}/userOrders?userName={userName}";
+                //}
+                public static string GetOrders(string baseUri)
+                {
+                    return baseUri;
+                }
+                public static string AddNewOrder(string baseUri)
+                {
+                    return $"{baseUri}/new";
+                }
+            }
+        }
+
+
     }
-}
+

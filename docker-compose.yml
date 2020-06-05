@@ -25,6 +25,30 @@ services:
         
      depends_on:
        - mssqlserver
+   cart:
+     build:
+       context: .\CartApi
+       dockerfile: Dockerfile
+     image: jewels/cartapi
+     logging:
+       driver: "json-file"
+       options:
+         max-size: "200k"
+         max-file: "10"
+     environment:
+       ASPNETCORE_ENVIRONMENT: Development
+       IdentityUrl: http://10.0.0.11:6700
+       ConnectionString: basket.data
+     ports:
+       - "6801:80"
+     container_name: cartapi
+     networks:
+       - backend
+       - frontend
+     depends_on:
+      - basket.data
+      - tokenserver
+
     
    mssqlserver:
      image: "microsoft/mssql-server-linux:latest"
@@ -57,6 +81,7 @@ services:
        - frontend
      depends_on:
        - mssqlserver
+  
 
 
    webmvc: 
@@ -69,12 +94,23 @@ services:
        CatalogUrl: http://catalog
        IdentityUrl: http://10.0.0.11:6700
        CallBackUrl: http://localhost:5210
+       CartUrl: http://cart
      ports:
        - "5210:80"
      networks:
        - frontend
      depends_on:
        - catalog
+       - cart
+       - tokenserver
       
 
       
+   basket.data:
+     image: redis
+     container_name: basketdata
+     ports:
+       - "6080:6379"
+     networks:
+       - backend
+       

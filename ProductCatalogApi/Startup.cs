@@ -61,6 +61,7 @@ namespace ProductCatalogApi
                     //description for my documentation
                     Description = "Product catalog microservice",
                 });
+                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
 

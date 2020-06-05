@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Principal;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using WebMVC.Infrastructure;
+using WebMVC.Models;
 using WebMVC.services;
 
 namespace WebMvc
@@ -37,6 +39,12 @@ namespace WebMvc
             //
             services.AddSingleton<IHttpClient, CustomHttpClient>();
             services.AddSingleton<ICatalogService, CatalogService>();
+            //this allows get the token from the httpcontext browser session
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            //identityservice
+            services.AddTransient<IIdentityService<ApplicationUser>, IdentityService>();
+            //cart service
+            services.AddSingleton<ICartService, CartService>();
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
             var callBackUrl = Configuration.GetValue<string>("CallBackUrl");
             services.AddAuthentication(options =>
@@ -60,6 +68,7 @@ namespace WebMvc
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
                 options.Scope.Add("offline_access");
+                options.Scope.Add("basket");
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
 
